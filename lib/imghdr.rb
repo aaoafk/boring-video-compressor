@@ -19,24 +19,32 @@ module Imghdr
     'xbm' => ['image/x-xbitmap'],
     'bmp' => ['image/bmp', 'image/x-windows-bmp'],
     'webp' => ['image/webp'],
-    'exr' => ['image/x-exr']
+    'exr' => ['image/x-exr'],
+    'mov' => ['video/quicktime']
   }.freeze
 
   VALID_FILE_EXTENSIONS = VALID_MIME_TYPES.keys.freeze
 
   class << self
     def what(file, h = nil)
-      f = nil
       begin
         if h.nil?
           if file.is_a?(String) || file.is_a?(Pathname)
             f = File.open(file, 'r')
             h = f.read(32)
-            h.force_encoding(Encoding::UTF_8) if h.respond_to?(:force_encoding)
+            begin
+                h.encode!(Encoding::UTF_8)
+            rescue EncodingError
+                h.force_encoding(Encoding::UTF_8)
+            end
           else
-            location = file.tell
+            file.rewind # Run it back to the beginning
             h = file.read(32)
-            file.seek(location)
+            begin
+                h.encode!(Encoding::UTF_8)
+            rescue EncodingError
+                h.force_encoding(Encoding::UTF_8)
+            end
           end
         end
         return nil if h.nil? || h.empty?
@@ -50,9 +58,8 @@ module Imghdr
       nil
     end
 
-    def valid_content_type?(file)
-        mime_type = file.content_type
-        Imghdr::VALID_MIME_TYPES.any? { |_, types| types.include?(mime_type) }
+    def valid_content_type?(content_type)
+        Imghdr::VALID_MIME_TYPES.any? { |_, types| types.include?(content_type) }
     end
   end
 
@@ -111,6 +118,10 @@ module Imghdr
   def test_exr(h, f)
     'exr' if h.start_with?("\x76\x2F\x31\x01")
   end
+  
+  def test_mov(h, f)
+    'mov' if h[4..7] == 'ftyp'
+  end
 
   TESTS.concat([
     method(:test_jpeg),
@@ -125,6 +136,7 @@ module Imghdr
     method(:test_xbm),
     method(:test_bmp),
     method(:test_webp),
-    method(:test_exr)
+    method(:test_exr),
+    method(:test_mov)
   ])
 end
