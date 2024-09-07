@@ -21,15 +21,19 @@
   <body class="bg-gray-100 font-sans">
     <main class="container mx-auto px-4">
       <header class="py-6">
+          <!-- Need to collapse nav on mobile -->
           <nav class="flex justify-between items-center">
               <div class="text-2xl font-bold text-blue-600">VidSqueeze</div>
+              <button class="md:hidden" id="toggle-nav">
+                <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24">
+                  <!-- ... (hamburger icon SVG) need to figure this out -->
+                </svg>
+              </button>
               <ul class="flex space-x-4">
-                  <ul class="flex space-x-4">
-                    <li><%= link_to 'Home', root_path, class: "text-gray-600 hover:text-blue-600" %></li>
-                    <li><%= link_to 'About', pages_about_path, class: "text-gray-600 hover:text-blue-600" %></li>
-                    <li><%= link_to 'How To Use', pages_how_to_use_path, class: "text-gray-600 hover:text-blue-600" %></li>
-                    <li><%= link_to 'Built By', pages_built_by_path, class: "text-gray-600 hover:text-blue-600" %></li>
-                  </ul>
+                <li><%= link_to 'Home', root_path, class: "no-underline hover:underline text-gray-600 hover:text-blue-600" %></li>
+                <li><%= link_to 'About', pages_about_path, class: "no-underline hover:underline text-gray-600 hover:text-blue-600 hover:underline" %></li>
+                <li><%= link_to 'How To Use', pages_how_to_use_path, class: "no-underline hover:underline text-gray-600 hover:text-blue-600 hover:underline" %></li>
+                <li><%= link_to 'Built By', pages_built_by_path, class: "no-underline hover:underline text-gray-600 hover:text-blue-600 hover:underline" %></li>
               </ul>
           </nav>
       </header>
@@ -40,4 +44,12 @@
   <footer class="py-6 text-center text-gray-600">
     <p>&copy; 2024 VidSqueeze. All rights reserved.</p>
   </footer>
+  <script>
+    const toggleNav = document.getElementById('toggle-nav');
+    const navLinks = document.getElementById('nav-links');
+
+    toggleNav.addEventListener('click', () => {
+      navLinks.classList.toggle('hidden');
+    });
+  </script>
 </html>

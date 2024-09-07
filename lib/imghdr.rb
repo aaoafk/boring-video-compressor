@@ -20,7 +20,8 @@ module Imghdr
     "bmp" => [ "image/bmp", "image/x-windows-bmp" ],
     "webp" => [ "image/webp" ],
     "exr" => [ "image/x-exr" ],
-    "mov" => [ "video/quicktime" ]
+    "mov" => [ "video/quicktime" ],
+    "mp4" => [ "video/mp4" ]
   }.freeze
 
   VALID_FILE_EXTENSIONS = VALID_MIME_TYPES.keys.freeze
@@ -32,19 +33,11 @@ module Imghdr
           if file.is_a?(String) || file.is_a?(Pathname)
             f = File.open(file, "r")
             h = f.read(32)
-            begin
-                h.encode!(Encoding::UTF_8)
-            rescue EncodingError
-                h.force_encoding(Encoding::UTF_8)
-            end
+            imghr_force_encoding(h)
           else
             file.rewind # Run it back to the beginning
             h = file.read(32)
-            begin
-                h.encode!(Encoding::UTF_8)
-            rescue EncodingError
-                h.force_encoding(Encoding::UTF_8)
-            end
+            imghr_force_encoding(h)
           end
         end
         return nil if h.nil? || h.empty?
@@ -56,6 +49,14 @@ module Imghdr
         f&.close
       end
       nil
+    end
+
+    def imghr_force_encoding(h, encoding = Encoding::UTF_8)
+      begin
+        h.encode!(encoding)
+      rescue EncodingError
+        h.force_encoding(encoding)
+      end
     end
 
     def valid_content_type?(content_type)
@@ -123,6 +124,10 @@ module Imghdr
     "mov" if h[4..7] == "ftyp"
   end
 
+  def test_mp4(h, f)
+    "mp4" if h[5..8] == "ftyp"
+  end
+
   TESTS.concat([
     method(:test_jpeg),
     method(:test_png),
@@ -137,6 +142,7 @@ module Imghdr
     method(:test_bmp),
     method(:test_webp),
     method(:test_exr),
-    method(:test_mov)
+    method(:test_mov),
+    method(:test_mp4)
   ])
 end
