@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  # TODO: Review routes. Ensure that dead routes are not drawn and ensure that this is idiomatic with rails.
   get "videos/compress"
   get "videos/download"
   get "pages/home"
