@@ -1,14 +1,13 @@
-require 'fileutils'
+require "fileutils"
 
 class VideosController < ApplicationController
   def compress
     input_file = params[:input_file]
-    file_extension = input_file.original_filename.split('.').last
 
     # Check if the uploaded file is a valid video file
     if Imghdr.valid_content_type?(input_file.content_type) && Imghdr.what(input_file.path).in?(Imghdr::VALID_FILE_EXTENSIONS)
       # Create the directory for storing compressed files, if it doesn't exist
-      compressed_files_dir = Rails.root.join('tmp', 'uploads')
+      compressed_files_dir = Rails.root.join("tmp", "uploads")
       FileUtils.mkdir_p(compressed_files_dir)
 
       # Construct the path for the compressed video file
@@ -20,7 +19,7 @@ class VideosController < ApplicationController
 
       if status.success?
         # Video compression successful
-        send_file compressed_file_path, filename: "compressed_#{input_file.original_filename}", type: 'application/octet-stream', disposition: 'attachment'
+        send_data compressed_file_path, filename: "compressed_#{input_file.original_filename}", type: "application/octet-stream", disposition: "attachment"
       else
         # Video compression failed
         redirect_to root_path, alert: "Error compressing video: #{stderr}"

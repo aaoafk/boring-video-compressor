@@ -3,7 +3,7 @@
   <head>
     <title><%= content_for(:title) || "Boring Video Compressor" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -18,9 +18,26 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+  <body class="bg-gray-100 font-sans">
+    <main class="container mx-auto px-4">
+      <header class="py-6">
+          <nav class="flex justify-between items-center">
+              <div class="text-2xl font-bold text-blue-600">VidSqueeze</div>
+              <ul class="flex space-x-4">
+                  <ul class="flex space-x-4">
+                    <li><%= link_to 'Home', root_path, class: "text-gray-600 hover:text-blue-600" %></li>
+                    <li><%= link_to 'About', pages_about_path, class: "text-gray-600 hover:text-blue-600" %></li>
+                    <li><%= link_to 'How To Use', pages_how_to_use_path, class: "text-gray-600 hover:text-blue-600" %></li>
+                    <li><%= link_to 'Built By', pages_built_by_path, class: "text-gray-600 hover:text-blue-600" %></li>
+                  </ul>
+              </ul>
+          </nav>
+      </header>
       <%= yield %>
     </main>
   </body>
+
+  <footer class="py-6 text-center text-gray-600">
+    <p>&copy; 2024 VidSqueeze. All rights reserved.</p>
+  </footer>
 </html>
