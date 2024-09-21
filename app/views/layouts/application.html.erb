@@ -15,21 +15,24 @@
     <link rel="apple-touch-icon" href="/icon.png">
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+		<!-- importmaps shims for browsers that do not support import maps -->
+		<script async src="https://ga.jspm.io/npm:es-module-shims@1.8.2/dist/es-module-shims.js" data-turbo-track="reload"></script>
     <%= javascript_importmap_tags %>
+		<%= javascript_include_tag "turbo", type: "module-shim" %>
   </head>
 
   <body class="bg-gray-100 font-sans">
     <main class="container mx-auto px-4">
       <header class="py-6">
           <!-- TODO: Need to collapse nav on mobile -->
-          <nav class="flex justify-between items-center">
-              <div class="text-2xl font-bold text-blue-600">VidSqueeze</div>
-              <button class="md:hidden" id="toggle-nav">
+          <nav class="flex justify-between items-center" data-controller="squish-nav">
+              <div class="text-2xl font-bold text-blue-600"><%= link_to 'VidSqueeze', root_path %></div>
+              <button class="md:hidden" data-action="squish-nav#burgerize">
                 <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24">
                   <!-- ... (hamburger icon SVG) need to figure this out -->
                 </svg>
               </button>
-              <ul class="flex space-x-4">
+              <ul class="flex space-x-4" data-squish-nav-target="hotdog">
                 <li><%= link_to 'Home', root_path, class: "no-underline hover:underline text-gray-600 hover:text-blue-600" %></li>
                 <li><%= link_to 'About', pages_about_path, class: "no-underline hover:underline text-gray-600 hover:text-blue-600 hover:underline" %></li>
                 <li><%= link_to 'How To Use', pages_how_to_use_path, class: "no-underline hover:underline text-gray-600 hover:text-blue-600 hover:underline" %></li>
@@ -44,14 +47,4 @@
   <footer class="py-6 text-center text-gray-600">
     <p>&copy; 2024 VidSqueeze. All rights reserved.</p>
   </footer>
-
-  <!-- TODO: Convert to stimulus controller? -->
-  <script>
-    const toggleNav = document.getElementById('toggle-nav');
-    const navLinks = document.getElementById('nav-links');
-
-    toggleNav.addEventListener('click', () => {
-      navLinks.classList.toggle('hidden');
-    });
-  </script>
 </html>
